@@ -27,7 +27,7 @@ const (
 	BT_INSTANCE = "around-post"
 	BUCKET_NAME = "around-post-images"
 	// Needs to update this URL if you deploy it to cloud.
-	ES_URL          = "http://localhost:9200"
+	ES_URL          = "http://34.73.115.103:9200"
 	ENABLE_MEMCACHE = false
 	ENABLE_BIGTABLE = false
 	ENABLE_AUTH     = true
@@ -180,12 +180,14 @@ func handlerPost(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("Saved one post to ElasticSearch: %s", p.Message)
 	fmt.Printf("Post is saved to Index: %s\n", p.Message)
 
-	err = saveToBigTable(p, id)
-	if err != nil {
-		http.Error(w, "Failed to save post to BigTable", http.StatusInternalServerError)
-		fmt.Printf("Failed to save post to BigTable %v.\n", err)
-		return
-	}
+	/*
+		err = saveToBigTable(p, id)
+		if err != nil {
+			http.Error(w, "Failed to save post to BigTable", http.StatusInternalServerError)
+			fmt.Printf("Failed to save post to BigTable %v.\n", err)
+			return
+		}
+	*/
 }
 
 func handlerSearch(w http.ResponseWriter, r *http.Request) {
