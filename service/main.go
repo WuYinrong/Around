@@ -18,6 +18,8 @@ import (
 	"github.com/olivere/elastic"
 	"github.com/pborman/uuid"
 	"path/filepath"
+
+	"google.golang.org/api/option"
 )
 
 const (
@@ -134,7 +136,8 @@ func handlerPost(w http.ResponseWriter, r *http.Request) {
 		fmt.Printf("Image is not available %v.\n", err)
 		return
 	}
-	attrs, err := saveToGCS(file, BUCKET_NAME, id)
+	jsonPath := "/home/wumail1992/around-credential.json"
+	attrs, err := saveToGCS(jsonPath, file, BUCKET_NAME, id)
 	if err != nil {
 		http.Error(w, "Failed to save image to GCS", http.StatusInternalServerError)
 		fmt.Printf("Failed to save image to GCS %v.\n", err)
@@ -316,11 +319,11 @@ func readFromES(lat, lon float64, ran string) ([]Post, error) {
 	return posts, nil
 }
 
-func saveToGCS(r io.Reader, bucketName, objectName string) (*storage.ObjectAttrs, error) {
+func saveToGCS(jsonPath string, r io.Reader, bucketName, objectName string) (*storage.ObjectAttrs, error) {
 	ctx := context.Background()
 
 	// Creates a client.
-	client, err := storage.NewClient(ctx)
+	client, err := storage.NewClient(ctx, option.WithCredentialsFile(jsonPath))
 	if err != nil {
 		return nil, err
 	}
